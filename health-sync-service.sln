@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthSync.Core", "HealthSync.Core\HealthSync.Core.csproj", "{E0635B22-3E1C-44D7-8578-DEBC766209A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthSync.Api", "HealthSync.Api\HealthSync.Api.csproj", "{A45A642A-92A8-47D5-8D52-F20F837C99BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthSync.BackgroundServices", "HealthSync.BackgroundServices\HealthSync.BackgroundServices.csproj", "{A8259942-F42E-4709-81F8-31945EED2C09}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthSync.Plugin.GarminConnect", "HealthSync.Plugin.GarminConnect\HealthSync.Plugin.GarminConnect.csproj", "{9B629225-BC24-48AB-A787-11118246EE98}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthSync.Plugin.InfluxDb", "HealthSync.Plugin.InfluxDb\HealthSync.Plugin.InfluxDb.csproj", "{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FF14DA80-4D0F-451E-B141-FA4002A5771C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E0635B22-3E1C-44D7-8578-DEBC766209A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0635B22-3E1C-44D7-8578-DEBC766209A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0635B22-3E1C-44D7-8578-DEBC766209A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0635B22-3E1C-44D7-8578-DEBC766209A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A45A642A-92A8-47D5-8D52-F20F837C99BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A45A642A-92A8-47D5-8D52-F20F837C99BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A45A642A-92A8-47D5-8D52-F20F837C99BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A45A642A-92A8-47D5-8D52-F20F837C99BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8259942-F42E-4709-81F8-31945EED2C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8259942-F42E-4709-81F8-31945EED2C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8259942-F42E-4709-81F8-31945EED2C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8259942-F42E-4709-81F8-31945EED2C09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B629225-BC24-48AB-A787-11118246EE98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B629225-BC24-48AB-A787-11118246EE98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B629225-BC24-48AB-A787-11118246EE98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B629225-BC24-48AB-A787-11118246EE98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B629225-BC24-48AB-A787-11118246EE98} = {FF14DA80-4D0F-451E-B141-FA4002A5771C}
+		{BF78DCB5-B8ED-4F4F-8515-5AC33CFD62A4} = {FF14DA80-4D0F-451E-B141-FA4002A5771C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00C92495-2D21-4B3D-A28F-C16B78A1C45D}
+	EndGlobalSection
+EndGlobal

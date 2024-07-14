@@ -1,0 +1,50 @@
+﻿# Maximum synchronization size in days
+maxSyncSize: 1 # in days
+
+# List of synchronization jobs
+sync:
+  - cron: 0 2 * * *
+    # Index identifier for the synchronization job
+    index: user1
+    # Input (Provider) plugin configuration
+    input:
+        plugin: garmin-connect
+        meta:
+            # Login credentials for Garmin Connect
+            login: XXX
+            password: XXX
+    # Output (Repository) plugin configuration
+    output:
+        plugin: influx-db
+        meta:
+            # Authentication token for InfluxDB
+            token: XXX
+            # Endpoint URL for InfluxDB
+            endpoint: XXX
+            # Target bucket in InfluxDB
+            bucket: healthsync
+            # Organization identifier in InfluxDB
+            org: NA
+  
+  - cron: 0 2 * * *
+    # Index identifier for the second synchronization job
+    index: user2
+    # Input (Provider) plugin configuration
+    input:
+        plugin: garmin-connect
+        meta:
+            # Login credentials for Garmin Connect
+            login: YYY
+            password: YYY
+    # Output (Repository) plugin configuration
+    output:
+        plugin: influx-db
+        meta:
+            # Authentication token for InfluxDB
+            token: XXX
+            # Endpoint URL for InfluxDB
+            endpoint: XXX
+            # Target bucket in InfluxDB
+            bucket: healthsync
+            # Organization identifier in InfluxDB
+            org: NA

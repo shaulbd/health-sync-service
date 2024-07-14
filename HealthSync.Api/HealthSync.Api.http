@@ -1,0 +1,27 @@
+@HealthSync.Api_HostAddress = http://localhost:5034
+
+POST {{HealthSync.Api_HostAddress}}/sync/manual
+Content-Type: application/json
+Accept: application/json
+
+{
+  "index": "XXX",
+  "provider": {
+    "plugin": "garmin-connect",
+    "meta": {
+      "login": "XXX",
+      "password": "XXX"
+    }
+  },
+  "repository": {
+    "plugin": "influx-db",
+    "meta": {
+      "token": "XXX",
+      "endpoint": "XXX",
+      "bucket": "XXX",
+      "org": "XXX"
+    }
+  }
+}
+
+###
