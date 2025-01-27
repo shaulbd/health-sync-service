@@ -49,6 +49,7 @@ jobs:
           - `docker pull ${{ secrets.DOCKER_USERNAME }}/mywellnesssync:${{ github.run_number }}`
         draft: false
         prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
