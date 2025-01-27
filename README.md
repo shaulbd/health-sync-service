@@ -1,4 +1,7 @@
-# MyWellnessSync
+<div>
+    <img src="./assets/logo.svg" width="96" style="vertical-align: middle;" />
+    <h1 style="display: inline; vertical-align: middle;">MyWellnessSync</h1>
+</div>
 
 MyWellnessSync is a vendor-neutral web API designed to synchronize and store health data from multiple wearable device vendors (e.g., Garmin, Fitbit) in a unified format. This project is extensible and supports custom plugins for data transformation and storage.
 
@@ -29,14 +32,76 @@ MyWellnessSync is a vendor-neutral web API designed to synchronize and store hea
 
 3. Run the Docker container:
    ```bash
-   docker run -d -p 8080:8080 --name healthsync-container healthsync
+   docker run -d -p 8080:8080 --name healthsync-container healthsync -v /path/to/sync-config.yml:/home/app/.config/health-sync/sync-config.yml
    ```
-
+   
 4. Access the application at `http://localhost:8080/swagger`.
 
-### Configuration
-- Edit the `sync-config.example.yml` file to define your sync tasks.
-- Use environment variables to supply sensitive data like API keys.
+### Sync Configuration Example
+```yaml
+# Maximum synchronization size in days
+maxSyncSize: 1 # in days
+
+# List of synchronization jobs
+sync:
+  - cron: 0 2 * * *
+    # Index identifier for the synchronization job
+    index: user1
+    # Input (Provider) plugin configuration
+    input:
+        plugin: garmin-connect
+        meta:
+            # Login credentials for Garmin Connect
+            login: XXX
+            password: XXX
+    # Output (Repository) plugin configuration
+    output:
+        plugin: influx-db
+        meta:
+            # Authentication token for InfluxDB
+            token: XXX
+            # Endpoint URL for InfluxDB
+            endpoint: XXX
+            # Target bucket in InfluxDB
+            bucket: healthsync
+            # Organization identifier in InfluxDB
+            org: NA
+  
+  - cron: 0 2 * * *
+    # Index identifier for the second synchronization job
+    index: user2
+    # Input (Provider) plugin configuration
+    input:
+        plugin: garmin-connect
+        meta:
+            # Login credentials for Garmin Connect
+            login: YYY
+            password: YYY
+    # Output (Repository) plugin configuration
+    output:
+        plugin: influx-db
+        meta:
+            # Authentication token for InfluxDB
+            token: XXX
+            # Endpoint URL for InfluxDB
+            endpoint: XXX
+            # Target bucket in InfluxDB
+            bucket: healthsync
+            # Organization identifier in InfluxDB
+            org: NA
+```
+
+### Environment Variables
+The application supports the following environment variables for configuration:
+- **`API_KEY`**: The API key for authenticating requests (optional).
+- **`SYNC_DB_FILE`**: Path to the SQLite database file for cache storage (default: `sqlite.cache.db`).
+- **`SYNC_CONFIG_PATH`**: Path to the YAML configuration file for sync tasks (default: `sync-config.yml`).
+- **`CORS_HOSTS`**: Comma-separated list of allowed CORS origins (default: `*`).
+- **`LOG_PATH`**: Path to the log file (default: `logs/applog-.txt`).
+- **`API_EXPLORER`**: Enable Swagger API explorer (default: `false`).
+
+### Exposed Port
+- The application exposes port **8080** for incoming HTTP requests.
 
 ## API Endpoints
 - **POST /api/sync/manual**: Trigger manual data synchronization.
