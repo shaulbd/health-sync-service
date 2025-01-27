@@ -27,6 +27,7 @@ namespace HealthSync.Api.Middlewares
 					SyncResultStatus.Success => StatusCodes.Status200OK,
 					SyncResultStatus.PartialSuccess => StatusCodes.Status207MultiStatus,
 					SyncResultStatus.AlreadyRunning => StatusCodes.Status409Conflict,
+					SyncResultStatus.TaskNotFound => StatusCodes.Status404NotFound,
 					_ => StatusCodes.Status500InternalServerError,
 				};
 
@@ -53,7 +54,6 @@ namespace HealthSync.Api.Middlewares
 
 				return true;
 			}
-
 			return false;
 		}
 	}

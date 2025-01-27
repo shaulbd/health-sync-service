@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-
+﻿
 namespace HealthSync.Core.Models
 {
 	public class SyncContext
@@ -13,15 +12,15 @@ namespace HealthSync.Core.Models
 		{
 			var syncContext = new SyncContext
 			{
-				SyncId = $"{task.Input.Plugin}_{task.Index}_{task.Output.Plugin}",
-				ProviderMeta = task.Input.Meta,
-				RepositoryMeta = task.Output.Meta
+				SyncId = task.Id,
+				Provider = task.Input.Meta,
+				Repository = task.Output.Meta
 			};
 			return syncContext;
 		}
 
-		public string SyncId { get; set; }
-		public Dictionary<string, string> ProviderMeta { get; set; }
-		public Dictionary<string, string> RepositoryMeta { get; set; }
+		public string SyncId { get; init; }
+		public IReadOnlyDictionary<string, string> Provider { get; init; }
+		public IReadOnlyDictionary<string, string> Repository { get; init; }
 	}
 }

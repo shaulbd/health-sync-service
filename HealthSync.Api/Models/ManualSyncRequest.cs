@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace HealthSync.Api.Models
@@ -6,59 +7,45 @@ namespace HealthSync.Api.Models
 	/// <summary>
 	/// Represents a request for manual synchronization.
 	/// </summary>
-	public class ManualSyncRequest
+	public class ManualSyncRequest : IValidatableObject
 	{
 		/// <summary>
 		/// Gets or sets the start time for the sync operation.
 		/// </summary>
 		[JsonPropertyName("start")]
-		public DateTimeOffset Start { get; set; } = DateTimeOffset.UtcNow.AddDays(-1);
+		[FromQuery(Name = "start")]
+		public DateTimeOffset? Start { get; set; }
 
 		/// <summary>
 		/// Gets or sets the end time for the sync operation.
 		/// </summary>
 		[JsonPropertyName("end")]
-		public DateTimeOffset End { get; set; } = DateTimeOffset.UtcNow;
+		[FromQuery(Name = "end")]
+		public DateTimeOffset? End { get; set; }
 
 		/// <summary>
-		/// Gets or sets the unique identifier for the sync operation.
+		/// Get or sets the Task ID for the sync operation.
 		/// </summary>
-		[JsonPropertyName("index")]
-		[Required]
-		public required string Index { get; set; }
+		[JsonPropertyName("taskId")]
+		[FromRoute(Name = "taskId")]
+		public required string TaskId { get; init; }
 
 		/// <summary>
-		/// Gets or sets the provider plugin configuration.
+		/// Validate the sync request
 		/// </summary>
-		[JsonPropertyName("provider")]
-		[Required]
-		public required ManualSyncPlugin Provider { get; set; }
+		/// <param name="validationContext">Validation context.</param>
+		/// <returns></returns>
+		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		{
+			if (Start >= End)
+			{
+				yield return new ValidationResult("Start date must be earlier than End date.", [nameof(Start), nameof(End)]);
+			}
 
-		/// <summary>
-		/// Gets or sets the repository plugin configuration.
-		/// </summary>
-		[JsonPropertyName("repository")]
-		[Required]
-		public required ManualSyncPlugin Repository { get; set; }
+			if (End > DateTimeOffset.UtcNow)
+			{
+				yield return new ValidationResult("End date cannot be in the future.", [nameof(End)]);
+			}
+		}
 	}
-
-	/// <summary>
-	/// Represents a plugin configuration for manual synchronization.
-	/// </summary>
-	public class ManualSyncPlugin
-	{
-		/// <summary>
-		/// Gets or sets the name of the plugin.
-		/// </summary>
-		[JsonPropertyName("plugin")]
-		[Required]
-		public required string Plugin { get; set; }
-
-		/// <summary>
-		/// Gets or sets additional metadata for the plugin.
-		/// </summary>
-		[JsonPropertyName("meta")]
-		public Dictionary<string, string>? Meta { get; set; }
-	}
-
 }

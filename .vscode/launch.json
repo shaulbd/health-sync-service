@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "HealthSync.Api",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/HealthSync.Api/bin/Debug/net8.0/HealthSync.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/HealthSync.Api",
+            "stopAtEntry": false,
+            "preLaunchTask": "build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "API_KEY": "bakeyournoodle",
+                "API_EXPLORER": "true",
+                "CORS_HOSTS": "*",
+                "SYNC_CONFIG_PATH": "sync-config.yml"
+            }
+        }
+    ]
+}

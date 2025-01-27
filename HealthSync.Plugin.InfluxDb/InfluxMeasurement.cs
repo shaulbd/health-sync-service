@@ -2,51 +2,62 @@
 
 namespace HealthSync.Plugin.InfluxDb
 {
-	[Measurement("heart_rate")]
-	public class InfluxHeartRateSampleData
+	public class IndexedMeasurementData<T>
 	{
-		[Column("account_id", IsTag = true)]
-		public string Index { get; set; }
-
-		[Column("heart_rate")]
-		public long HeartRate { get; set; }
+		[Column("index", IsTag = true)]
+		public required string Index { get; set; }
 
 		[Column(IsTimestamp = true)]
 		public DateTimeOffset Timestamp { get; set; }
+
+		[Column("value")]
+		public required T Value { get; set; }
 	}
 
-	[Measurement("heart_rate_extra")]
-	public class InfluxHeartRateData
+	[Measurement("heart_rate")]
+	public class InfluxHeartRateData : IndexedMeasurementData<long>
 	{
-		[Column("account_id", IsTag = true)]
-		public string Index { get; set; }
-
-		[Column("max_heart_rate")]
-		public long? MaxHeartRate { get; set; }
-
-		[Column("min_heart_rate")]
-		public long? MinHeartRate { get; set; }
-
-		[Column("resting_heart_rate")]
-		public long? RestingHeartRate { get; set; }
-
-		[Column("avg_heart_rate_7days")]
-		public long? AvgHeartRate7Days { get; set; }
-
-		[Column(IsTimestamp = true)]
-		public DateTimeOffset Timestamp { get; set; }
 	}
 
 	[Measurement("steps")]
-	public class InfluxStepsData
+	public class InfluxStepsData : IndexedMeasurementData<long>
 	{
-		[Column("account_id", IsTag = true)]
-		public string Index { get; set; }
+	}
 
-		[Column("steps")]
-		public long Steps { get; set; }
+	[Measurement("sleep_stages")]
+	public class InfluxSleepStageData : IndexedMeasurementData<int>
+	{
+		[Column("friendly_name", IsTag = true)]
+		public string FriendlyName { get; set; }
+	}
 
-		[Column(IsTimestamp = true)]
-		public DateTimeOffset Timestamp { get; set; }
+	[Measurement("sleep_movements")]
+	public class InfluxSleepMovementData : IndexedMeasurementData<double>
+	{
+	}
+
+	[Measurement("hrv")]
+	public class InfluxHrvData : IndexedMeasurementData<int>
+	{
+	}
+
+	[Measurement("body_battery")]
+	public class InfluxBodyBatteryData : IndexedMeasurementData<int>
+	{
+	}
+
+	[Measurement("stress")]
+	public class InfluxStressData : IndexedMeasurementData<long>
+	{
+	}
+
+	[Measurement("respiration")]
+	public class InfluxRespirationData : IndexedMeasurementData<long>
+	{
+	}
+
+	[Measurement("spo2")]
+	public class InfluxSpo2Data : IndexedMeasurementData<long>
+	{
 	}
 }

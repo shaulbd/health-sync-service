@@ -3,29 +3,30 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HealthSync.Api.Auth
 {
-    public class ApiKeyAuthAttribute : Attribute, IAuthorizationFilter
-    {
-        private const string ApiKeyHeaderName = "X-API-Key";
+	public class ApiKeyAuthAttribute : Attribute, IAuthorizationFilter
+	{
+		private const string ApiKeyHeaderName = "X-API-Key";
 
-        public void OnAuthorization(AuthorizationFilterContext context)
-        {
-            var settings = context.HttpContext.RequestServices.GetRequiredService<ApiSettings>();
-            if (string.IsNullOrEmpty(settings.ApiKey))
-            {
-                return;
+		public void OnAuthorization(AuthorizationFilterContext context)
+		{
+			var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+			var apiKey = configuration["API_KEY"];
 
-            }
-            if (!context.HttpContext.Request.Headers.TryGetValue(ApiKeyHeaderName, out var potentialApiKey))
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
+			if (string.IsNullOrEmpty(apiKey))
+			{
+				return;
+			}
 
-            if (!settings.ApiKey.Equals(potentialApiKey))
-            {
-                context.Result = new UnauthorizedResult();
-            }
-        }
-    }
+			if (!context.HttpContext.Request.Headers.TryGetValue(ApiKeyHeaderName, out var potentialApiKey))
+			{
+				context.Result = new UnauthorizedResult();
+				return;
+			}
 
+			if (!apiKey.Equals(potentialApiKey))
+			{
+				context.Result = new UnauthorizedResult();
+			}
+		}
+	}
 }

@@ -4,7 +4,7 @@ namespace HealthSync.Core.Services
 {
 	public class SemaphoreManager
 	{
-		private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+		private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphores = new();
 
 		public SemaphoreSlim GetSemaphore(string syncId)
 		{

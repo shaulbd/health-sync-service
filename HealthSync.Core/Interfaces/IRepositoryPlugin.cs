@@ -1,5 +1,4 @@
 ﻿using HealthSync.Core.Models;
-using HealthSync.Core.Services;
 
 namespace HealthSync.Core.Interfaces
 {

@@ -2,17 +2,19 @@
   "profiles": {
     "http": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "API_KEY": "bakeyournoodle",
+        "API_EXPLORER": "true",
+        "CORS_HOSTS": "*",
+        "SYNC_CONFIG_PATH": "sync-config.yml"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5034"
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -20,7 +22,6 @@
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
-      "launchBrowser": false,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
         "ASPNETCORE_HTTP_PORTS": "8080"

@@ -1,8 +1,10 @@
 using HealthSync.Api;
 using HealthSync.Api.Auth;
+using HealthSync.Api.Logging;
 using HealthSync.Api.Middlewares;
 using HealthSync.BackgroundServices.Services;
-using HealthSync.Core;
+using HealthSync.Core.Extensions;
+using HealthSync.Core.Interfaces;
 using HealthSync.Core.Services;
 using HealthSync.Plugin.GarminConnect;
 using HealthSync.Plugin.InfluxDb;
@@ -15,19 +17,10 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 const string CorsPolicy = "CorsPolicy";
-const string SyncConfig = "sync-config.yml";
-
-// Load settings from configuration
-var settings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
-if (settings == null)
-{
-	throw new ArgumentNullException(nameof(settings));
-}
-
-builder.Services.AddSingleton(settings);
 
 // Add Serilog logger
-builder.Services.AddSerilogLogger(builder.Configuration);
+var logPath = (builder.Configuration["LOG_PATH"] ?? "logs/applog-.txt").NormalizePath(PathNormalizer.UserData);
+builder.AddSerilogLogger(logPath);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -36,15 +29,22 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-	var allowed = settings.CorsSettings.AllowedOrigins.ToArray();
-	allowed = allowed.Length != 0 ? allowed : ["*"];
-	options.AddPolicy(CorsPolicy,
-		builder =>
+	options.AddPolicy(CorsPolicy, policyBuilder =>
+	{
+		var corsHosts = (builder.Configuration["CORS_HOSTS"] ?? "*")
+			.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+		if (corsHosts.Contains("*"))
 		{
-			builder.WithOrigins(allowed)
-				   .AllowAnyHeader()
-				   .AllowAnyMethod();
-		});
+			policyBuilder.AllowAnyOrigin();
+		}
+		else
+		{
+			policyBuilder.WithOrigins(corsHosts);
+		}
+		policyBuilder.AllowAnyHeader()
+					 .AllowAnyMethod();
+	});
 });
 
 // Add OpenAPI support
@@ -54,11 +54,12 @@ builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "Health Sync API", Version = "v1" });
 	c.ExampleFilters(); // Enable examples
-	c.AddSwaggerAuth(settings.ApiKey); // Enable api key if set
+	c.AddSwaggerAuth(builder.Configuration["API_KEY"]); // Enable api key if set
 });
 
 // Load configuration for services
-builder.Services.AddSingleton(CoreExtensions.LoadConfiguration(SyncConfig));
+var syncConfigPath = (builder.Configuration["SYNC_CONFIG_PATH"] ?? "sync-config.yml").NormalizePath(PathNormalizer.UserConfig);
+builder.Services.AddSingleton(CoreExtensions.LoadConfiguration(syncConfigPath));
 
 // Set up plugins
 builder.Services.AddKeyedSingleton<IEnumerable<Assembly>>("Plugins",
@@ -78,6 +79,21 @@ builder.Services.AddSingleton<SyncBackgroundService>();
 // Register SemaphoreManager for sync locking
 builder.Services.AddSingleton<SemaphoreManager>();
 
+// Register health converters
+builder.Services.AddHealthDataConverters();
+
+// Register cache
+var dbPath = (builder.Configuration["SYNC_DB_FILE"] ?? "sqlite.cache.db").NormalizePath(PathNormalizer.UserCache);
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IPersistentStorage, SqlitePersistentStorage>(sp =>
+	new SqlitePersistentStorage(dbPath, sp.GetRequiredService<ILogger<SqlitePersistentStorage>>()));
+builder.Services.AddSingleton<IHybridCache, HybridCache>();
+builder.Services.AddHostedService(sp =>
+            new CachePersistenceBackgroundService(
+                sp.GetRequiredService<IHybridCache>(),
+                TimeSpan.FromMinutes(1)));
+builder.Services.AddTransient(typeof(IPluginCache<>), typeof(PluginCache<>));
+
 // Add error handling
 builder.Services.AddErrorHandler();
 
@@ -90,7 +106,7 @@ app.UseExceptionHandler(_ => { });
 app.UseSerilogRequestLogging(options =>
 {
 	options.MessageTemplate = "Handled {RequestPath}";
-	options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
+	options.GetLevel = (httpContext, elapsed, ex) => builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Error;
 	options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
 	{
 		diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
@@ -99,7 +115,7 @@ app.UseSerilogRequestLogging(options =>
 });
 
 // Configure the HTTP request pipeline
-if (settings.EnableSwagger)
+if (bool.TryParse(app.Configuration["API_EXPLORER"], out bool enableSwagger) && enableSwagger)
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();

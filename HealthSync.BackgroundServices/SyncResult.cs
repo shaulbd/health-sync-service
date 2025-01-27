@@ -10,6 +10,7 @@ namespace HealthSync.BackgroundServices
 		Success,
 		PartialSuccess, 
 		AlreadyRunning,
+		TaskNotFound,
 		Error
 	}
 

@@ -1,27 +1,27 @@
-﻿using System.Text.Json;
-
+﻿
 namespace HealthSync.Core.Models
 {
 	public class SyncConfiguration
 	{
 		public int MaxSyncSize { get; set; } = 1;
+		public int RetryCount { get; set; } = 3;
 		public List<SyncTask> Sync { get; set; } = new();
 	}
 
-	public class SyncTask
+	public record SyncTask
 	{
-		public string Cron { get; set; }
-		public required string Index { get; set; }
-		public required PluginConfig Input { get; set; }
-		public required PluginConfig Output { get; set; }
-		public DateTimeOffset? Start { get; set; }
-		public DateTimeOffset? End { get; set; }
-
+		public string Cron { get; init; }
+		public required string Index { get; init; }
+		public required PluginConfig Input { get; init; }
+		public required PluginConfig Output { get; init; }
+		public DateTimeOffset? Start { get; init; }
+		public DateTimeOffset? End { get; init; }
+		public string Id => $"{Input.Plugin}_{Index}_{Output.Plugin}";
 	}
 
-	public class PluginConfig
+	public record PluginConfig
 	{
-		public required string Plugin { get; set; }
-		public Dictionary<string, string> Meta { get; set; } = [];
+		public required string Plugin { get; init; }
+		public Dictionary<string, string> Meta { get; init; } = new();
 	}
 }
