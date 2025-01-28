@@ -11,6 +11,19 @@ MyWellnessSync is a vendor-neutral web API designed to synchronize and store hea
 - **Background Synchronization**: Schedule periodic sync tasks using CRON expressions.
 - **Manual Sync**: Trigger synchronization manually via API endpoints.
 
+
+## System Design Flow
+
+```mermaid
+graph TD
+    A[CRON Task Scheduler] -->|Triggers based on sync-config.yml| B[Input Plugin]
+    B -->|Fetches data from Vendor API| C[Vendor API]
+    C -->|Returns vendor-specific data| B
+    B -->|Transforms data into generic structure| D[Transformation Layer]
+    D -->|Passes transformed data| E[Output Plugin]
+    E -->|Stores data in target DB| F[Database]
+```
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -34,7 +47,7 @@ MyWellnessSync is a vendor-neutral web API designed to synchronize and store hea
    ```bash
    docker run -d -p 8080:8080 --name healthsync-container healthsync -v /path/to/sync-config.yml:/home/app/.config/health-sync/sync-config.yml
    ```
-   
+
 4. Access the application at `http://localhost:8080/swagger`.
 
 ### Sync Configuration Example
